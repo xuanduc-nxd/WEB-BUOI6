@@ -1,7 +1,7 @@
 -- Buổi 6 dùng lại schema 2 bảng từ Buổi 3–5. KHÔNG đổi DB khi refactor.
 -- File này tạo DB và thêm dữ liệu mẫu để chạy độc lập khi chưa có source Buổi 4.
 -- CẢNH BÁO: không chạy lại trên DB đã có dữ liệu cần giữ.
-CREATE DATABASE IF NOT EXISTS vkushop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS vku_shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE vku_shop;
 
 CREATE TABLE IF NOT EXISTS categories (

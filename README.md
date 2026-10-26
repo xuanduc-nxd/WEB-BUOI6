@@ -1,7 +1,7 @@
 # VKUShop — Buổi 06: OOP + Composer + MVC-lite
 
 **Học phần:** Công nghệ và lập trình web · VKU
-**Mục tiêu:** refactor lại Product List và Category List, giữ nguyên các chức năng CRUD từ Buổi 4.
+**Mục tiêu:** refactor Product/Category List và toàn bộ Create/Edit/Delete sang MVC-lite, giữ URL và hành vi CRUD.
 
 ## Phạm vi và lưu ý nguồn gốc
 
@@ -19,7 +19,7 @@ Schema mẫu: `categories(id, name, slug)` và `products(id, category_id, name, 
 
 Dùng phpMyAdmin → Import `database/database.sql` vào MySQL. SQL có dữ liệu mẫu, và **không DROP bảng**; tuy vậy chỉ import vào database demo, không ghi đè dữ liệu học viên đang cần giữ.
 
-Tùy máy, đổi host/user/password qua biến môi trường hoặc `config/database.php` (mặc định `127.0.0.1:3306`, DB `vkushop`, user `root`, mật khẩu rỗng).
+Tùy máy, đổi host/user/password qua biến môi trường hoặc `config/database.php` (mặc định `127.0.0.1:3306`, DB `vku_shop`, user `root`, mật khẩu rỗng).
 
 ## Bước 2 — Tạo Composer autoload
 
@@ -48,7 +48,15 @@ Truy cập:
 
 **XAMPP:** nên cấu hình DocumentRoot của project trỏ vào thư mục `public/` hoặc truy cập `http://localhost/<folder>/public/`. Các link CRUD dùng đường dẫn tương đối nên không cần Router. Chỉ nên xuất bản thư mục `public/` khi deploy thực tế (không để `config/`, `src/`, `database/`, `vendor/` thành tài nguyên web công khai).
 
-## Không dạy / không làm trong Buổi 6
+## Luồng mã nguồn
+
+`GET /products.php` → `public/products.php` (entry, bootstrap) → `ProductController::index()` (điều phối) → `ProductRepository::all()` (SQL/PDO) → `views/products/index.php` (HTML). Category đi theo luồng tương tự. `App\` ánh xạ tới `src/`, nên `App\Repositories\\ProductRepository` nằm ở `src/Repositories/ProductRepository.php`. PDO được truyền qua constructor để các method dùng chung một kết nối và dễ kiểm thử.
+
+Muốn đổi SQL JOIN thì sửa `ProductRepository::all()`; muốn đổi bảng HTML thì sửa View. Các câu SQL có tham số trong `findById()`, `create()`, `update()` và `delete()` dùng prepared statement; `all()` dùng `query()` vì SQL cố định, không chứa dữ liệu từ request.
+
+Các entry trong `public/` chỉ bootstrap và gọi Controller. Controller xử lý GET/POST, validation và redirect. Repository chỉ truy xuất dữ liệu. View trình bày HTML và dùng `e()` để escape dữ liệu người dùng.
+
+## Ngoài phạm vi
 
 Không có Laravel, DI Container, Interface, Inheritance, Routing framework, Session/Login, Search/Filter/Pagination/Upload. Các tính năng đó học ở các buổi sau.
 
@@ -56,17 +64,14 @@ Không có Laravel, DI Container, Interface, Inheritance, Routing framework, Ses
 
 Tham khảo `TEST_CHECKLIST.md`. Test trực tiếp các chức năng List, Create, Edit, Delete của cả Product và Category; JOIN, slug trùng, FK khi xóa danh mục, ID sai, escaping, CSS/link.
 
+## Kiểm thử nhanh
+
+```bash
+php tests/php/smoke.php
+```
+
+Smoke test dùng SQLite trong bộ nhớ để kiểm tra Repository, danh sách và validation mà không sửa dữ liệu MySQL. Để kiểm thử đủ HTTP và các lỗi riêng của MySQL (slug trùng, khóa ngoại), import DB demo và thực hiện `TEST_CHECKLIST.md` trên trình duyệt. SQL trong `database/database.sql` đã dùng tên `vku_shop` trùng với cấu hình mặc định.
+
 ## Bài tập về nhà — BẮT BUỘC NỘP
 
-Refactor nốt Create/Edit/Delete của Product + Category sang MVC-lite. Giữ validation, prepared statements và redirect sau POST. Không cần Router hoặc thêm chức năng mới. Nộp source, composer.json, hướng dẫn chạy và Git commit.
-## STARTER — công việc trên lớp
-
-1. Chạy baseline hiện tại: danh sách Product/Category và CRUD vẫn hoạt động bằng PHP truyền thống.
-2. **P1/P2:** nhìn lại SQL Product trong `public/products.php`; viết `ProductRepository::all()` giữ đúng JOIN và `category_name`.
-3. **Composer:** kiểm tra `composer.json`, chạy `composer dump-autoload`, nạp class theo namespace.
-4. **P3/P4/P5:** viết `ProductController::index()`; chuyển HTML từ entry sang `views/products/index.php`.
-5. Sửa `public/products.php` để chỉ bootstrap, tạo Controller/Repository và gọi `index()`.
-6. **C1–C4:** tự làm tương tự cho Category, giữ nguyên các liên kết CRUD.
-7. Chạy checklist kiểm thử và `git commit`.
-
-**Chú ý:** Starter cố tình giữ List theo code cũ để chạy ngay, class có TODO chưa hoạt động; chỉ chuyển entry sang Controller **sau khi** hoàn tất class và View. Các file Create/Edit/Delete là baseline chạy được, không yêu cầu chuyển trong giờ.
+Create/Edit/Delete của Product + Category đã được chuyển sang MVC-lite. Giữ validation, prepared statements và redirect sau POST. Nộp source, composer.json, hướng dẫn chạy và Git commit theo yêu cầu giảng viên.

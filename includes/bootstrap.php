@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/functions.php';
 
-// Composer được dùng để tự nạp App\\Controllers và App\\Repositories.
-// Starter vẫn chạy CRUD cũ trước khi học class; muốn chạy Completed/List mới,
-// sinh viên phải chạy: composer dump-autoload tại thư mục gốc project.
 $autoloadFile = dirname(__DIR__) . '/vendor/autoload.php';
-if (is_file($autoloadFile)) {
-    require_once $autoloadFile;
+if (!is_file($autoloadFile)) {
+    exit('Chưa có Composer autoload. Chạy composer dump-autoload tại thư mục gốc dự án.');
 }
+require_once $autoloadFile;
 
 $dbConfig = require dirname(__DIR__) . '/config/database.php';
 try {

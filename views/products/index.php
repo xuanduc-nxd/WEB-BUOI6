@@ -1,19 +1,6 @@
 <?php
-// TODO P5: chuyển phần HTML từ public/products.php sang đây.
-// Dữ liệu $products phải do ProductController truyền vào.
-// Sử dụng e() với text người dùng và giữ link CRUD cũ.
-// BUỔI 4: PHP vừa query DB vừa điều phối và render HTML trong entry.
-// TODO BUỔI 6: chuyển SQL sang ProductRepository::all(), điều phối sang
-// ProductController::index(), chuyển toàn bộ HTML sang views/products/index.php.
-
-
-// sql nay dung de lay du lieu tu bang products va categories
-
-
-
-// VIEW: hiển thị HTML. $products được Controller (hoặc legacy entry) cung cấp.
 $pageTitle = 'Danh sách sản phẩm';
-require __DIR__ . '/../includes/header.php';
+require __DIR__ . '/../../includes/header.php';
 ?>
 <div class="page-head">
  <div><h1>Danh sách sản phẩm</h1><p class="muted">Sản phẩm và danh mục được lấy từ MySQL.</p></div>
@@ -29,7 +16,6 @@ require __DIR__ . '/../includes/header.php';
  <table class="data-table">
   <thead><tr><th>ID</th><th>Sản phẩm</th><th>Danh mục</th><th>Giá</th><th>Tồn kho</th><th>Thao tác</th></tr></thead>
   <tbody>
-
   <?php foreach ($products as $product):  ?>
   <tr>
    <td><?= (int)$product['id'] ?></td>
@@ -50,4 +36,4 @@ require __DIR__ . '/../includes/header.php';
   </tbody>
  </table>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+<?php require __DIR__ . '/../../includes/footer.php'; ?>
